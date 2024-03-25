@@ -3,6 +3,17 @@ from pyspark.sql.types import *
 from concurrent.futures import ThreadPoolExecutor
 
 class CompatibilityChecker:
+    """
+    A class to check the compatibility of Delta tables with specified fabric runtime versions.
+    
+    Attributes:
+        fabric_runtime: The version of the fabric runtime to check compatibility against.
+        catalog_names: List of catalog names to be evaluated.
+        schema_names: List of schema names to be evaluated. If None, all schemas are considered.    
+    Methods:
+        evaluate() -> DataFrame:
+            Evaluates and returns a DataFrame summarizing the compatibility of tables within the specified catalogs and schemas.
+    """
     def __init__(self, catalog_names: list[str], schema_names: list[str] = None, fabric_runtime: str = '1.2'):
         self.fabric_runtime = fabric_runtime
         self.catalog_names = catalog_names
@@ -11,7 +22,13 @@ class CompatibilityChecker:
         self._set_runtime_features()
         self.droppable_features = ['v2Checkpoint', 'deletionVectors']
 
+        if 'hive_metastore' in catalog_names:
+            raise ValueError(f"hive_metadata is not supported in this beta release. Please only reference Unity Catalog catalogs!")
+
     def _set_runtime_features(self):
+        """
+        Sets the valid writer and reader features based on the passed in fabric_runtime version.
+        """
         match self.fabric_runtime:
             case '1.2':
                 self.valid_fabric_writer_features = ['appendOnly', 'invariants', 'checkConstraints', 'generatedColumns', 'changeDataFeed', 'columnMapping', 'deletionVectors', 'timestampNtz']
@@ -60,6 +77,9 @@ class CompatibilityChecker:
         row['location'] = location
             
     def evaluate(self) -> DataFrame:
+        """
+        Triggers the evaluation of compatilibity of tables based on the defined catalogs and schemas.
+        """
         table_metadata = []
         for catalog in self.catalog_names:
             schemas = [row.databaseName for row in self.spark.sql(f"SHOW SCHEMAS IN {catalog}").collect() if row.databaseName in self.schema_names or len(self.schema_names) == 0]
