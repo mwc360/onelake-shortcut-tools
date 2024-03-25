@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "onelake-shortcut-tools"
+version = "0.0.1"
+authors = [
+  { name="Miles Cole", email="m.w.c.360@gmail.com" },
+]
+description = "A library of tools for OneLake shortcuts."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/mwc360/onelake-shortcut-tools/"
+Issues = "https://github.com/mwc360/onelake-shortcut-tools/issues"
