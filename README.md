@@ -24,6 +24,6 @@ display(df)
 
 ## Supported Configrations
 - Databricks Unity Catalog is currently required for the beta release. Support for `hive_metastore` objects will be added in the next release.
-- Apache Spark Runtime for Fabric 1.2 and 1.3 are currently supported.
+- Apache Spark Runtime for Fabric 1.2 and 1.3 Preview are currently supported.
 
 
