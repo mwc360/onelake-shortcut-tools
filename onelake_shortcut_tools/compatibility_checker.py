@@ -34,15 +34,18 @@ class CompatibilityChecker:
                 self.valid_fabric_writer_features = ['appendOnly', 'invariants', 'checkConstraints', 'generatedColumns', 'changeDataFeed', 'columnMapping', 'deletionVectors', 'timestampNtz']
                 self.valid_fabric_reader_features = ['columnMapping', 'deletionVectors', 'timestampNtz']
             case '1.3':
-                self.valid_fabric_writer_features = ['appendOnly', 'invariants', 'checkConstraints', 'generatedColumns', 'changeDataFeed', 'columnMapping', 'deletionVectors', 'timestampNtz', 'v2Checkpoint', 'domainMetadata', 'clustering', 'allowColumnDefaults', 'liquid']
+                self.valid_fabric_writer_features = ['appendOnly', 'invariants', 'checkConstraints', 'generatedColumns', 'changeDataFeed', 'columnMapping', 'deletionVectors', 'rowTracking', 'timestampNtz', 'v2Checkpoint', 'domainMetadata', 'clustering', 'allowColumnDefaults', 'liquid']
                 self.valid_fabric_reader_features = ['columnMapping', 'deletionVectors', 'timestampNtz', 'v2Checkpoint']
+            case '2.0':
+                self.valid_fabric_writer_features = ['appendOnly', 'invariants', 'checkConstraints', 'generatedColumns', 'changeDataFeed', 'columnMapping', 'deletionVectors', 'rowTracking', 'timestampNtz', 'v2Checkpoint', 'domainMetadata', 'clustering', 'allowColumnDefaults', 'liquid', 'variantType-preview', 'collations-preview', 'typeWidening']
+                self.valid_fabric_reader_features = ['columnMapping', 'deletionVectors', 'timestampNtz', 'v2Checkpoint', 'variantType-preview', 'typeWidening']
             case _:
                 raise ValueError(f"Fabric Runtime ({self.fabric_runtime}) is not supported for evaluation by this tool")
             
     def _get_table_features(self, catalog_name, schema_name, table_name):
-        valid_writer_features = ['appendOnly', 'invariants', 'checkConstraints', 'generatedColumns', 'allowColumnDefaults', 'changeDataFeed', 'columnMapping', 'identityColumns', 'deletionVectors', 'rowTracking', 'timestampNtz', 'domainMetadata', 'v2Checkpoint', 'icebergCompatV1', 'icebergCompatV2', 'liquid', 'clustering']
+        valid_writer_features = ['appendOnly', 'invariants', 'checkConstraints', 'generatedColumns', 'allowColumnDefaults', 'changeDataFeed', 'columnMapping', 'identityColumns', 'deletionVectors', 'rowTracking', 'timestampNtz', 'domainMetadata', 'v2Checkpoint', 'icebergCompatV1', 'icebergCompatV2', 'liquid', 'clustering', 'variantType-preview', 'collations-preview', 'typeWidening']
 
-        valid_reader_features = ['columnMapping', 'deletionVectors', 'timestampNtz', 'v2Checkpoint']
+        valid_reader_features = ['columnMapping', 'deletionVectors', 'timestampNtz', 'v2Checkpoint', 'variantType-preview', 'typeWidening']
 
         self.spark.catalog.setCurrentCatalog(catalog_name)
         table_details = self.spark.sql(f"DESCRIBE DETAIL {schema_name}.{table_name}").collect()[0]
